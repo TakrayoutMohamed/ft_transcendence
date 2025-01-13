@@ -113,3 +113,10 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 'message': f'{sender['username']} send you a message'
             }
         ))
+    async def invite_tournemet(self, event):
+        sender = event['sender']
+        await self.send(text_data=json.dumps({
+            'sender': sender,
+            'type': 'invite_tournemet',
+            'message': f'{sender['username']} sent your localtournement request'
+        }))

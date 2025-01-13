@@ -145,7 +145,7 @@ export const trigerRightEvent = (json_data: SocketJsonValueType) => {
     case "block_request": {
       break;
     }
-    case "message": {
+    case "sent_message": {
       if (
         !store
           .getState()
@@ -169,6 +169,14 @@ export const trigerRightEvent = (json_data: SocketJsonValueType) => {
     }
     case "accept_invite": {
       launchToast(json_data, () => {}, () => {});
+      break;
+    }
+    case "invite_tournemet": {
+      toast.warn(json_data.message, {
+        autoClose: 1000,
+        toastId: json_data.sender?.username,
+        containerId:"validation"
+      });
       break;
     }
     default: {

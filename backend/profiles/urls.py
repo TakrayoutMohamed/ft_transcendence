@@ -26,4 +26,5 @@ urlpatterns = [
     path('recent_games', ResentGames.as_view()),
     path('matchmaking', MatchMaking.as_view()),
     path('accept_invite', AcceptInvite.as_view()),
+    path('warn_tr', WaurnTurnement.as_view()),
 ]

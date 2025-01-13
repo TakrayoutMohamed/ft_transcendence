@@ -79,18 +79,14 @@ ROOT_URLCONF = 'backend.urls'
 WSGI_APPLICATION = 'backend.wsgi.application'
 ASGI_APPLICATION = 'backend.asgi.application'
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS=[
-    "https://localhost:5174",
-    "https://127.0.0.1:5174",
     HOST_MC
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://localhost:5174",
-    "https://127.0.0.1:5174",
     HOST_MC
 ]
 
@@ -102,11 +98,11 @@ CORS_ALLOWED_ORIGINS = [
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGIEN', 'django.db.backends.postgresql'),
-        'NAME': os.environ.get('DB_NAME', 'trencendense'),
-        'USER': os.environ.get('DB_USER', 'ponguser'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', '123456'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),  # This should match the service name in Docker
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
     }
 }
 

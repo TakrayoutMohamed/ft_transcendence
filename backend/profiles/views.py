@@ -708,3 +708,24 @@ class AcceptInvite(APIView):
         except Exception as e:
             return Response({'info':str(e)},status=400)
 
+class WaurnTurnement(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ByUserSerializer
+
+    def post(self, request):
+        try:
+            user = request.user
+            user_data = UserSerializer(user).data
+            channel_layer = get_channel_layer()
+            for friend in user.friends.all():
+                print(friend)
+                async_to_sync(channel_layer.group_send)(
+                    f"notification_{friend.id}",
+                    {
+                        'sender':user_data,
+                        'type': 'invite_tournemet',
+                    }
+                )
+            return Response('Done',status=200)
+        except Exception as e:
+            return Response({'info': str(e)}, status=400)
