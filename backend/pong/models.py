@@ -30,3 +30,4 @@ class Game(models.Model):
 
     def get_game_state(self):
         return self.game_state
+    

@@ -97,13 +97,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         game.player2 = self.user
         game.save()
         return game
+
         
     @database_sync_to_async
     def change_state(self, user, state):
-        if state:
-            user.on_game = True
-        else:
-            user.on_game = False
+        user.on_game = state
         user.save()
 
 
@@ -333,14 +331,17 @@ class PongConsumer(AsyncWebsocketConsumer):
                 print("player 1 jaaaaa w jab++++++")
                 print("player jaaaaa", self.user)
                 self.game = await self.create_game(self.room_group_name)
+                if self.game.winner != 'Unknown':
+                    self.game = await self.create_game(self.room_group_name)
+
                 # print("room: ", existing_game.room)
             
             # elif await self.check_player1(existing_game) == False:
             else:
                 existing_game = await self.get_available_game()
-                self.game = await self.add_player2(existing_game)
-
-
+                if await self.check_player1(existing_game) == False:                    
+                    self.game = await self.add_player2(existing_game)
+                self.game = existing_game
                 # Get usernames in an async-safe way
                 players = await self.get_player_usernames(self.game)
                 # print("/////////////////////////////")

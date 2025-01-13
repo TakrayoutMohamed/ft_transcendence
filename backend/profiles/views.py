@@ -83,7 +83,6 @@ class LoginView(APIView):
                 )
                 return response
         except Exception as e:
-            print(e)
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class Sign_upView(APIView):
@@ -587,49 +586,27 @@ class UserRecentGames(APIView):
                 username = request.GET['username']
                 if username == request.user.username:
                     return Response('you can not search for your self',status=400)
-
                 user = User.objects.get(username=username)
-
-                leagueGames = Game.objects.filter(
-                    (Q(player1=user) | Q(player2=user)) &
-                    Q(winner__isnull=False)
-                )
-
-                pongGames = PongGame.objects.filter(
-                    (Q(player1=user) | Q(player2=user)) &
-                    ~Q(winner='Unknown')
-                )
-
-                combined_games = sorted(
-                    chain(leagueGames, pongGames),
-                    key=lambda game: game.updated_at,
-                    reverse=True
-                )
-
-                response_data = []
-                for game in combined_games:
-                    if isinstance(game, Game):
-                        serializer = GameSerializer(game)
-                    else:
-                        serializer = PongGameSerializer(game)
-                    response_data.append(serializer.data)
-                return Response(response_data,status=200)
             except:
+                user = request.user
                 pass
-            user = request.user
 
-            leagueGames = Game.objects.filter(
+            league_games = Game.objects.filter(
                 (Q(player1=user) | Q(player2=user)) &
-                Q(winner__isnull=False)
+                Q(winner__isnull=False) &
+                Q(player1__isnull=False) &
+                Q(player2__isnull=False)
             )
 
-            pongGames = PongGame.objects.filter(
+            pong_games = PongGame.objects.filter(
                 (Q(player1=user) | Q(player2=user)) &
-                ~Q(winner='Unknown')
+                ~Q(winner='Unknown') &
+                Q(player1__isnull=False) &
+                Q(player2__isnull=False)
             )
 
             combined_games = sorted(
-                chain(leagueGames, pongGames),
+                chain(league_games, pong_games),
                 key=lambda game: game.updated_at,
                 reverse=True
             )
@@ -642,8 +619,10 @@ class UserRecentGames(APIView):
                     serializer = PongGameSerializer(game)
                 response_data.append(serializer.data)
 
+            return Response(response_data, status=200)
             return Response(response_data)
         except Exception as e:
+            print(e)
             return Response({'info': str(e)}, status=400)
 
 class ResentGames(APIView):
@@ -652,8 +631,7 @@ class ResentGames(APIView):
     def get(self,request):
         try:
             leagueGames = Game.objects.filter(winner__isnull=False).order_by('-updated_at')[:10]
-            pongGames = PongGame.objects.filter(~Q(winner='Unknown')).order_by('-updated_at')[:10]
-
+            pongGames = PongGame.objects.filter(~Q(winner='Unknown') & Q(player1__isnull=False) & Q(player2__isnull=False)).order_by('-updated_at')[:10]
             combined_games = sorted(
                 chain(leagueGames, pongGames),
                 key=lambda game: game.updated_at,
@@ -667,7 +645,6 @@ class ResentGames(APIView):
                 else:
                     serializer = PongGameSerializer(game)
                 response_data.append(serializer.data)
-            
             return Response(response_data)
         except Exception as e:
             return Response({'info': str(e)}, status=400)
@@ -680,10 +657,9 @@ class MatchMaking(APIView):
             player = request.user
             user = User.objects.get(username=username)
             if user == player:
-                return Response({'cannot play with your self'},status=400)
-            print(user.on_game)
+                return Response({'cannot play with your self'})
             if user.on_game == True:
-                return Response({'player is bussy'},status=400)
+                return Response({'player is bussy'})
 
             user_data = UserSerializer(player).data
             matchs = Match.objects.create(
