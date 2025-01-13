@@ -84,14 +84,10 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 CSRF_TRUSTED_ORIGINS=[
-    "https://localhost",
-    "https://127.0.0.1",
     HOST_MC
 ]
 
 CORS_ALLOWED_ORIGINS = [
-   "https://localhost",
-    "https://127.0.0.1",
     HOST_MC
 ]
 # Database
