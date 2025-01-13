@@ -15,7 +15,7 @@ class PongMatchConsumer(AsyncJsonWebsocketConsumer):
         await self.accept()
         self.player_username = None
         self.level = None
-        self.matching_task = None    
+        self.matching_task = None   
 
     async def disconnect(self, close_code):
         """Handle websocket disconnection"""

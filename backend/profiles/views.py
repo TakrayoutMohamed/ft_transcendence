@@ -583,6 +583,39 @@ class UserRecentGames(APIView):
 
     def get(self, request):
         try:
+            try:
+                username = request.GET['username']
+                if username == request.user.username:
+                    return Response('you can not search for your self',status=400)
+
+                user = User.objects.get(username=username)
+
+                leagueGames = Game.objects.filter(
+                    (Q(player1=user) | Q(player2=user)) &
+                    Q(winner__isnull=False)
+                )
+
+                pongGames = PongGame.objects.filter(
+                    (Q(player1=user) | Q(player2=user)) &
+                    ~Q(winner='Unknown')
+                )
+
+                combined_games = sorted(
+                    chain(leagueGames, pongGames),
+                    key=lambda game: game.updated_at,
+                    reverse=True
+                )
+
+                response_data = []
+                for game in combined_games:
+                    if isinstance(game, Game):
+                        serializer = GameSerializer(game)
+                    else:
+                        serializer = PongGameSerializer(game)
+                    response_data.append(serializer.data)
+                return Response(response_data,status=200)
+            except:
+                pass
             user = request.user
 
             leagueGames = Game.objects.filter(
@@ -642,13 +675,17 @@ class ResentGames(APIView):
 class MatchMaking(APIView):
     permission_classes = [IsAuthenticated]
     def get(self,request):
-        try:
+        try: 
             username = request.GET['username']
             player = request.user
             user = User.objects.get(username=username)
             if user == player:
                 return Response({'cannot play with your self'},status=400)
-            user_data = UserSerializer(user).data
+            print(user.on_game)
+            if user.on_game == True:
+                return Response({'player is bussy'},status=400)
+
+            user_data = UserSerializer(player).data
             matchs = Match.objects.create(
                 player1_username=str(player.username),
                 player1_level=int(player.level),
@@ -694,3 +731,4 @@ class AcceptInvite(APIView):
             return Response({'game_id not exsiste'},status=400)
         except Exception as e:
             return Response({'info':str(e)},status=400)
+

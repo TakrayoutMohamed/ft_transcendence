@@ -3,6 +3,7 @@ import { recent } from "./styles";
 import { RootState } from "@/src/states/store";
 import { useEffect, useState } from "react";
 import { axiosPrivate } from "@/src/services/api/axios";
+import { useParams } from "react-router-dom";
 import { PingPongLogoIcon, rocketLeageLogoIcon } from "@/media-exporting";
 
 function getTimeFromAFullDate(date: string): string {
@@ -18,18 +19,22 @@ const Recent = () => {
     undefined
   );
   const userData = useSelector((state: RootState) => state.user.value);
+  const { userName } = useParams();
   const allUsersData = useSelector((state: RootState) => state.allUsers.value);
   useEffect(() => {
     const fetchUserRecentGames = async () => {
       try {
-        const res = await axiosPrivate.get("user_recent_games");
+        let requestParams = {};
+        if (userName)
+          requestParams = {...requestParams, username: userName};
+        const res = await axiosPrivate.get("user_recent_games",{params:requestParams});
         if (res.data) setUserRecentGames(res.data);
       } catch (err) {
         setUserRecentGames(undefined);
       }
     };
     if (!userRecentGames) fetchUserRecentGames();
-  }, [userData, allUsersData, userRecentGames]);
+  }, [userName, userData, allUsersData, userRecentGames]);
   if (!userRecentGames || !userRecentGames.length)
     return <div className="h4 text-warning"> No matches yet</div>;
   return (

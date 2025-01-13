@@ -18,6 +18,7 @@ class User(AbstractBaseUser):
     
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     is2fa = models.BooleanField(default=False)
+    on_game = models.BooleanField(default=False)
     wins = models.IntegerField(default=0)
     league_wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)

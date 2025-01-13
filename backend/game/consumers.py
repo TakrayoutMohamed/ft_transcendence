@@ -396,7 +396,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
         self.user = self.scope['user']
         self.game_group_name = f'game_{self.game_id}'
-
+        
         # Get or create game state
         if self.game_group_name not in GameConsumer.game_state:
             self.game = await self.create_game(self.game_group_name)
@@ -452,7 +452,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         game_state = GameConsumer.game_state[self.game_group_name]
         self.game = await self.get_available_game()
-
+        
         player1_username, player2_username = await self.get_player_usernames()
 
         # Update player connection status

@@ -99,6 +99,15 @@ class PongConsumer(AsyncWebsocketConsumer):
         return game
         
     @database_sync_to_async
+    def change_state(self, user, state):
+        if state:
+            user.on_game = True
+        else:
+            user.on_game = False
+        user.save()
+
+
+    @database_sync_to_async
     def check_player1(self, game):
         return game.player1 == self.user
 
@@ -307,6 +316,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.room_group_name = f'game_id_{self.game_id}'
             self.flag = 0
 
+            await self.change_state(self.scope['user'],True)
+
+
             print("game_id: ", self.game_id)
 
             await self.channel_layer.group_add(
@@ -388,6 +400,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         try:
             game_state = PongConsumer.game_states[self.room_group_name]
             game = await self.get_available_game()
+            await self.change_state(self.scope['user'],False)
 
             winner = None
             # Save the updated state
