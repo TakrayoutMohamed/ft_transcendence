@@ -66,7 +66,7 @@ const SignUp = () => {
         } else if (error.response?.status === 401) {
           setErrorMsg("Unauthorized");
         } else {
-          setErrorMsg("Login Failed: " + err.response?.data);
+          setErrorMsg("SignUp Failed: " + err.response?.data);
         }
       } else {
         setErrorMsg(errorMsg);
@@ -157,20 +157,6 @@ const SignUp = () => {
                 onClick={() => authenticateWithThirdParty("42")}
               >
                 <Si42 size={40} color="#000000" />
-              </div>
-              <div
-                className="text-decoration-none rounded-5 p-1 text-center"
-                style={{ cursor: "no-drop", background: "#8D6B92" }}
-                onClick={() => {}}
-              >
-                <SiGithub size={40} color="#000000" />
-              </div>
-              <div
-                className="text-decoration-none rounded-5 p-1 text-center"
-                style={{ cursor: "no-drop", background: "#8D6B92" }}
-                onClick={() => {}}
-              >
-                <FcGoogle size={40} color="#000000" />
               </div>
             </div>
             <div className="text-center">

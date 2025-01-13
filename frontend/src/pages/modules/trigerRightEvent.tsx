@@ -151,7 +151,7 @@ export const trigerRightEvent = (json_data: SocketJsonValueType) => {
           .getState()
           .conversations.value.find(
             (convers: ConversationListDataType) =>
-              convers.username !== json_data.sender.username
+              convers.username === json_data.sender.username
           )
       )
         setConversationsData([

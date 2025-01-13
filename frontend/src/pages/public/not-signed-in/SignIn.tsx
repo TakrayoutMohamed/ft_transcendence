@@ -154,20 +154,6 @@ const SignIn = () => {
               >
                 <Si42 size={40} color="#000000" />
               </div>
-              <div
-                className="text-decoration-none rounded-5 p-1 text-center"
-                style={{ cursor: "no-drop",background: "#8D6B92" }}
-                onClick={() => {}}
-              >
-                <SiGithub size={40} color="#000000" />
-              </div>
-              <div
-                className="text-decoration-none rounded-5 p-1 text-center"
-                style={{ cursor: "no-drop",background: "#8D6B92" }}
-                onClick={() => {}}
-              >
-                <FcGoogle size={40} color="#000000" />
-              </div>
             </div>
             <div className="text-center">
               <button

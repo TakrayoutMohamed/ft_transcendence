@@ -82,14 +82,18 @@ ASGI_APPLICATION = 'backend.asgi.application'
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
 
+
 CSRF_TRUSTED_ORIGINS=[
+    "https://localhost",
+    "https://127.0.0.1",
     HOST_MC
 ]
 
 CORS_ALLOWED_ORIGINS = [
+   "https://localhost",
+    "https://127.0.0.1",
     HOST_MC
 ]
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
