@@ -1,4 +1,4 @@
-import { gameIcon, profileIcon } from "@/media-exporting";
+import { gameIcon, profileIcon, tournamentIcon } from "@/media-exporting";
 import { chatProfileStyles } from "@/src/router/styles";
 import { useContext } from "react";
 import { MdBlock } from "react-icons/md";
@@ -8,6 +8,7 @@ import { blockUser, unblockUser } from "@/src/pages/modules/fetchingData";
 import { ChatDataContext } from "@/src/customDataTypes/ChatDataContext";
 import { UserDataType } from "@/src/customDataTypes/UserDataType";
 import { inviteToGame } from "@/src/pages/modules/inviteTogame";
+import { inviteToTournament } from "@/src/pages/modules/inviteToTournament";
 
 interface ProfileProps {
   isProfileVisible: boolean;
@@ -53,6 +54,12 @@ const Profile = ({ isProfileVisible }: ProfileProps) => {
             <img src={gameIcon} width={28} alt="" />
           </div>
           <p className="">Invite Ping Pong</p>
+        </button>
+        <button onClick={() => inviteToTournament()}>
+          <div className="">
+            <img src={tournamentIcon} width={28} alt="" />
+          </div>
+          <p className="">Warn Tournament</p>
         </button>
         {userData?.is_blocked ? (
           <button
