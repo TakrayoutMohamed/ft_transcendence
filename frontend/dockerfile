@@ -1,0 +1,10 @@
+FROM node:18-bullseye-slim
+
+WORKDIR /app
+
+RUN chmod +x ./setUp.sh
+
+COPY . .
+
+
+CMD ["sh", "./setUp.sh"]
