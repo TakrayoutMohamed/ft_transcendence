@@ -88,7 +88,7 @@ const ConversationContent = () => {
                   <img
                     src={
                       convers.sender.avatar
-                        ? process.env.BACKEND_API_URL + convers.sender.avatar
+                        ? process.env.VITE_BACKEND_API_URL + convers.sender.avatar
                         : profileIcon
                     }
                     alt={`img of ${userName}`}

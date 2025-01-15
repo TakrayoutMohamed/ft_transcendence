@@ -166,7 +166,7 @@ const NotificationsInGame = () => {
                   <img
                     src={
                       notification.sender_notif.avatar
-                        ? process.env.BACKEND_API_URL +
+                        ? process.env.VITE_BACKEND_API_URL +
                           notification.sender_notif.avatar
                         : profileIcon
                     }

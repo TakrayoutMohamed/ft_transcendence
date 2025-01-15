@@ -1,10 +1,29 @@
-FROM node:18-bullseye-slim
+FROM node:18-bullseye-slim AS build
 
-WORKDIR /app
+WORKDIR /frontend
 
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY .env .
 
 COPY . .
 
-RUN chmod +x ./setUp.sh
 
-CMD ["sh", "./setUp.sh"]
+RUN npm run build
+
+FROM nginx:alpine
+
+RUN apk update && apk upgrade
+
+COPY --from=build /frontend/dist /usr/share/nginx/html
+
+RUN rm /etc/nginx/conf.d/*
+
+COPY default.conf /etc/nginx/conf.d/
+
+EXPOSE 443
+
+CMD [ "nginx", "-g", "daemon off;" ]

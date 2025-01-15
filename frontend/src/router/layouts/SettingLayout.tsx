@@ -30,7 +30,7 @@ const SettingLayout = () => {
             <div className="user-image">
               <img src={
                   userData.avatar
-                    ? process.env.BACKEND_API_URL + "" + userData.avatar
+                    ? process.env.VITE_BACKEND_API_URL + "" + userData.avatar
                     : profileIcon
                 } alt="image of user" className="" />
             </div>

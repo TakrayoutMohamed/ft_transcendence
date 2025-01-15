@@ -74,7 +74,7 @@ const FriendRequests = () => {
                     <img
                       src={
                         user.avatar
-                          ? process.env.BACKEND_API_URL + "" + user.avatar
+                          ? process.env.VITE_BACKEND_API_URL + "" + user.avatar
                           : profileIcon
                       }
                       alt=""

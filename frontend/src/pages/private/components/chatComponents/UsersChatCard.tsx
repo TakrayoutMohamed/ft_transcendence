@@ -78,7 +78,7 @@ const UsersChatCard = () => {
                       y="0.1em"
                       href={
                         conversationUser.avatar
-                          ? process.env.BACKEND_API_URL +
+                          ? process.env.VITE_BACKEND_API_URL +
                             conversationUser.avatar
                           : profileIcon
                       }

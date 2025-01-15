@@ -31,7 +31,7 @@ export const PingPongLayout: React.FC = () => {
     if (connected == false)
       {
         wsRef.current = new w3cwebsocket(
-          `${process.env.BACKEND_API_SOCKETS}/ws/pong/${gameId}?token=${AccessToken}`
+          `${process.env.VITE_BACKEND_API_SOCKETS}/ws/pong/${gameId}?token=${AccessToken}`
         );
 
         // WebSocket event handlers

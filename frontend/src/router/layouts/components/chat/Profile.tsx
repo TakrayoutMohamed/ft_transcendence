@@ -36,7 +36,7 @@ const Profile = ({ isProfileVisible }: ProfileProps) => {
           <img
             src={
               userData?.avatar
-                ? process.env.BACKEND_API_URL + userData.avatar
+                ? process.env.VITE_BACKEND_API_URL + userData.avatar
                 : profileIcon
             }
             width={12}

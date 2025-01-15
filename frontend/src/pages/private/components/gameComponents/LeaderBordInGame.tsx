@@ -52,7 +52,7 @@ const LeaderBordInGame = () => {
                       <img
                         src={
                           player.avatar
-                            ? process.env.BACKEND_API_URL + "" + player.avatar
+                            ? process.env.VITE_BACKEND_API_URL + "" + player.avatar
                             : profileIcon
                         }
                         className="user-image"

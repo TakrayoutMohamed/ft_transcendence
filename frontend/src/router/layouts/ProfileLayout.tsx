@@ -97,7 +97,7 @@ const ProfileLayout = () => {
                 <img
                   src={
                     data.avatar
-                      ? process.env.BACKEND_API_URL + "" + data.avatar
+                      ? process.env.VITE_BACKEND_API_URL + "" + data.avatar
                       : profileIcon
                   }
                   alt="user image"

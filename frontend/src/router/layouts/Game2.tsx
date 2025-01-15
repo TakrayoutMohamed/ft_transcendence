@@ -34,7 +34,7 @@ const Game: React.FC<GameProps> = ({gameId}) => {
     if (!AccessToken) return; // Don't initialize if no AccessToken
 
     wsRef.current = new w3cwebsocket(
-      `${process.env.BACKEND_API_SOCKETS}/ws/league/${gameId}?token=${AccessToken}`
+      `${process.env.VITE_BACKEND_API_SOCKETS}/ws/league/${gameId}?token=${AccessToken}`
     );
 
     wsRef.current.onopen = () => {

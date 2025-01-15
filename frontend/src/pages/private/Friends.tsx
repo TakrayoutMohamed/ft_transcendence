@@ -75,7 +75,7 @@ const Friends = () => {
                     <img
                       src={
                         friend.avatar
-                          ? process.env.BACKEND_API_URL + "" + friend.avatar
+                          ? process.env.VITE_BACKEND_API_URL + "" + friend.avatar
                           : profileIcon
                       }
                       alt=""
@@ -147,7 +147,7 @@ const Friends = () => {
                     <img
                       src={
                         friend.avatar
-                          ? process.env.BACKEND_API_URL + "" + friend.avatar
+                          ? process.env.VITE_BACKEND_API_URL + "" + friend.avatar
                           : profileIcon
                       }
                       width={20}

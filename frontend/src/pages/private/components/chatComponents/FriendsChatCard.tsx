@@ -77,7 +77,7 @@ const FriendsChatCard = () => {
                         y="0.1em"
                         href={
                           friend.avatar
-                            ? process.env.BACKEND_API_URL + friend.avatar
+                            ? process.env.VITE_BACKEND_API_URL + friend.avatar
                             : profileIcon
                         }
                       />

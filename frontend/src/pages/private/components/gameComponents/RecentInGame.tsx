@@ -28,7 +28,7 @@ const NameAndImageIcon = ({ player, isWinner }: PlayerInfoProps) => {
         <img
           src={
             player.avatar
-              ? process.env.BACKEND_API_URL + "" + player.avatar
+              ? process.env.VITE_BACKEND_API_URL + "" + player.avatar
               : profileIcon
           }
           alt="playerIcon"
@@ -50,7 +50,7 @@ const NameAndImageIcon = ({ player, isWinner }: PlayerInfoProps) => {
         <img
           src={
             player.avatar
-              ? process.env.BACKEND_API_URL + "" + player.avatar
+              ? process.env.VITE_BACKEND_API_URL + "" + player.avatar
               : profileIcon
           }
           alt="playerIcon"

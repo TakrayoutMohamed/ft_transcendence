@@ -30,7 +30,7 @@ const Match: React.FC = () => {
     if (!AccessToken) return; // Don't initialize if no AccessToken
     
     wsRef.current = new w3cwebsocket(
-        `${process.env.BACKEND_API_SOCKETS}/ws/matchmaking/?token=${AccessToken}`
+        `${process.env.VITE_BACKEND_API_SOCKETS}/ws/matchmaking/?token=${AccessToken}`
     );
 
     wsRef.current.onopen = () => {
