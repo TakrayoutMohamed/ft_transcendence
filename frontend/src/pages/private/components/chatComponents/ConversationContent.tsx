@@ -61,9 +61,6 @@ const ConversationContent = () => {
       fetchingData: fetchingMessagesData,
     });
   const chatContext = useContext(ChatDataContext);
-  // this should be removed at production phase from all component it exist in
-  if (!chatContext)
-    throw new Error("this component need to be wrapped by chat context");
   const { chatSocket } = chatContext;
   listenForChatSocket(chatSocket);
   let previousMsgOwner = " ";

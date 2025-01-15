@@ -3,7 +3,6 @@ import { BiSearch } from "react-icons/bi";
 import UsersChatCard from "./UsersChatCard";
 import { chatConversationsList } from "../../styles";
 import TabListHeaders from "./TabListHeaders";
-import { ChatDataContext } from "@/src/customDataTypes/ChatDataContext";
 import { RootState } from "@/src/states/store";
 import { useSelector } from "react-redux";
 import { UserDataType } from "@/src/customDataTypes/UserDataType";
@@ -37,9 +36,6 @@ const ConversationsList = () => {
   useEffect(() => {
     setConversationsList(conversations);
   }, [conversations]);
-  const chatContext = useContext(ChatDataContext);
-  if (!chatContext)
-    throw new Error("this component should be wrapped inside a chatContext");
   return (
     <>
       <div className={`${chatConversationsList}`}>

@@ -3,7 +3,6 @@ import { chatProfileStyles } from "@/src/router/styles";
 import { useContext } from "react";
 import { MdBlock } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import { blockUser, unblockUser } from "@/src/pages/modules/fetchingData";
 import { ChatDataContext } from "@/src/customDataTypes/ChatDataContext";
 import { UserDataType } from "@/src/customDataTypes/UserDataType";
@@ -16,11 +15,8 @@ interface ProfileProps {
 
 const Profile = ({ isProfileVisible }: ProfileProps) => {
   const location = useLocation();
-
   const navigate = useNavigate();
   const chatContext = useContext(ChatDataContext);
-
-  if (!chatContext) throw new Error("it should be wraped inside a chatContext");
   const { userData, setUserData } = chatContext;
 
   if (

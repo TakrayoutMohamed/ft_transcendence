@@ -15,6 +15,7 @@ import { setMessagesData } from "../modules/setAuthenticationData";
 import { useSelector } from "react-redux";
 import { axiosPrivate } from "@/src/services/api/axios";
 import { UserDataType } from "@/src/customDataTypes/UserDataType";
+import { FriendsDataType } from "@/src/customDataTypes/FriendsDataType";
 
 const MessageSchema = z.object({
   textMessage: z
@@ -32,8 +33,8 @@ const FormComponent = () => {
     reset,
   } = useForm<MessageSchemaType>({ resolver: zodResolver(MessageSchema) });
   const messages = useSelector((state: RootState) => state.messages.value);
+  const friends = useSelector((state: RootState) => state.friends.value);
   const chatContext = useContext(ChatDataContext);
-  if (!chatContext) throw new Error("it should be wraped inside a chatContext");
   const { userData, chatSocket } = chatContext;
   const onSubmit: SubmitHandler<MessageSchemaType> = async (
     data: MessageSchemaType
@@ -46,15 +47,18 @@ const FormComponent = () => {
         };
         if (chatSocket?.readyState === w3cwebsocket.OPEN) {
           chatSocket?.send(JSON.stringify(dataToSend));
-          setMessagesData([
-            ...messages,
-            {
-              message: data.textMessage,
-              sender: store.getState().user.value,
-              updated_at: new Date().toISOString(),
-            },
-          ]);
-          reset({ textMessage: "" });
+          if (friends.find((friend : FriendsDataType)=> (friend.username === dataToSend.receiver)))
+          {
+            setMessagesData([
+              ...messages,
+              {
+                message: data.textMessage,
+                sender: store.getState().user.value,
+                updated_at: new Date().toISOString(),
+              },
+            ]);
+            reset({ textMessage: "" });
+          }
         }
       }
     } catch (err) {
@@ -90,10 +94,6 @@ const ChatArea = () => {
   const chatContext = useContext(ChatDataContext);
   const navigate = useNavigate();
   useEffect(() => {
-    if (!chatContext)
-      throw new Error(
-        "Error : this component should be wraped inside chat context"
-      );
     if (chatContext.userData?.username !== userName && userName !== undefined) {
       axiosPrivate
         .post("search_username", { username: userName })
