@@ -13,7 +13,7 @@ import { sidebar } from "../styles";
 const Sidebar = () => {
   return (
     <>
-      <div className={`${sidebar} backgroundActive`}>
+      <div className={`${sidebar}`}>
         <div className="sidebar-content">
           <div className="brand-icon">
             <img

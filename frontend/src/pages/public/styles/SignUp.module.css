@@ -1,20 +1,36 @@
 .signUp{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
     input, :focus
     {
         color: #FFFFFF;
         background: #FFFFFF7A;
     };
-    ::placeholder{
-        color:white;
-        
+    input{
+        ::placeholder {
+          color: white;
+        }
     }
-    button{
-        background: linear-gradient(90deg, #E3A5C7 0%, #694F8E 100%);
-        color: #FFFFFF;
+    div[class~="signup-button"]
+    {
+      display: flex;
+      justify-content: center;
+      button {
+        background: linear-gradient(90deg, #e3a5c7 0%, #694f8e 100%);
+        text-align: center;
+        padding-top : 0.2em;
+        text-wrap: nowrap;
+        background-color: red;
+        border-radius: 12px;
+        padding-inline:1em;
+        color: #ffffff;
         border: 0px;
         font-family: "LuckiestGuy";
         font-weight: normal;
         font-size: 1.3rem;
+      }
     }
 }
 
@@ -32,6 +48,12 @@
 }
 
 .signUpBare>p {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: nowrap;
+    text-align: center;
+    margin:0.2em;
     font-family: "LuckiestGuy";
     font-weight: normal;
     font-size: 1.3rem;

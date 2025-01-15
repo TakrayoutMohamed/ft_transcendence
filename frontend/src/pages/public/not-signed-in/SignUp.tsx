@@ -1,5 +1,4 @@
 import axios from "@/src/services/api/axios";
-// import { store } from "@/src/states/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   signUpAnimation,
@@ -12,8 +11,7 @@ import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BiSolidRightArrow } from "react-icons/bi";
-import { FcGoogle } from "react-icons/fc";
-import { Si42, SiGithub } from "react-icons/si";
+import { Si42 } from "react-icons/si";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { authenticateWithThirdParty } from "../../modules/authenticateWithThirdParty";
@@ -83,7 +81,7 @@ const SignUp = () => {
   };
   return (
     <div
-      className={`d-flex animationSelectorSignUp w-100 ${signUpRenderAnimation} ${signUp}`}
+      className={`animationSelectorSignUp ${signUpRenderAnimation} ${signUp}`}
     >
       <div className="w-100 ">
         <div className="d-flex justify-content-center h-100">
@@ -159,7 +157,7 @@ const SignUp = () => {
                 <Si42 size={40} color="#000000" />
               </div>
             </div>
-            <div className="text-center">
+            <div className="signup-button">
               <button
                 type="submit"
                 className="rounded-5 px-5 py-1 h4 m-0 text-nowrap"
@@ -177,7 +175,7 @@ const SignUp = () => {
           onClick={() => startAnimationSignUp()}
         >
           SIGN
-          <BiSolidRightArrow className="m-0 me-2 my-3" size="1em" />
+          <BiSolidRightArrow className="m-0 me-0 my-3" size="1em" />
           IN
         </p>
       </div>
