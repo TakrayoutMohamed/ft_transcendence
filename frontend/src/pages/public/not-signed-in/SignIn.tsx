@@ -11,8 +11,7 @@ import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { BiSolidLeftArrow } from "react-icons/bi";
-import { FcGoogle } from "react-icons/fc";
-import { Si42, SiGithub } from "react-icons/si";
+import { Si42 } from "react-icons/si";
 import { useLocation, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import ModalOtp from "@publicPages/not-signed-in/ModalOtp";
@@ -27,7 +26,7 @@ const signInSchema = z.object({
     .max(50, { message: "max email length is 50 chars" })
     .email({ message: "Enter valid email" }),
   password: z
-    .string({ message: "password is required" })
+    .string({ message: "password is required" })  
     .min(3, { message: "password must be more than 3 chars" })
     .max(30, { message: "password must be less than 30 chars" }),
 });
@@ -101,7 +100,7 @@ const SignIn = () => {
   };
   return (
     <div
-      className={`d-flex flex-row-reverse animationSelectorSignIn w-100 ${signInRenderAnimation} ${signIn}`}
+      className={`animationSelectorSignIn ${signInRenderAnimation} ${signIn}`}
     >
       <ModalComponent
         setIsOpen={setIsOpen}
@@ -155,10 +154,10 @@ const SignIn = () => {
                 <Si42 size={40} color="#000000" />
               </div>
             </div>
-            <div className="text-center">
+            <div className="signin-button">
               <button
                 type="submit"
-                className="rounded-5 px-5 py-1 h4 m-0 text-nowrap"
+                className=""
               >
                 SIGN IN
               </button>
@@ -171,9 +170,9 @@ const SignIn = () => {
           </form>
         </div>
       </div>
-      <div className={`border d-flex my-auto mx-3 ms-5 p-0  ${signInBare}`}>
+      <div className={`${signInBare}`}>
         <p
-          className="text-center h4 m-1"
+          className=""
           onClick={() => startAnimationSignIn()}
         >
           SIGN
