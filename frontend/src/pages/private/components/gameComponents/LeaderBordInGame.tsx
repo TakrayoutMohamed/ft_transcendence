@@ -46,7 +46,7 @@ const LeaderBordInGame = () => {
                 index < 6 ? (
                   <tr key={index} className="">
                     <th scope="col" className="">
-                      {player.rank}
+                      {Number(index) + 1}
                     </th>
                     <td className="user-image-container">
                       <img

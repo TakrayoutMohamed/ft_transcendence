@@ -102,29 +102,37 @@ const Tournament = () => {
                 type="text"
                 placeholder="Player 1 Alias"
                 value={playerNames.player1}
+                name="player1"
                 onChange={(e) => handlePlayerNameChange(e, 'player1')}
                 className="px-4 py-2 border rounded-lg"
+                autoComplete="off"
               />
               <input
                 type="text"
                 placeholder="Player 2 Alias"
+                name="player2"
                 value={playerNames.player2}
                 onChange={(e) => handlePlayerNameChange(e, 'player2')}
                 className="px-4 py-2 border rounded-lg"
+                autoComplete="off"
               />
               <input
                 type="text"
                 placeholder="Player 3 Alias"
                 value={playerNames.player3}
+                name="player3"
                 onChange={(e) => handlePlayerNameChange(e, 'player3')}
                 className="px-4 py-2 border rounded-lg"
+                autoComplete="off"
               />
               <input
                 type="text"
                 placeholder="Player 4 Alias"
                 value={playerNames.player4}
+                name="player4"
                 onChange={(e) => handlePlayerNameChange(e, 'player4')}
                 className="px-4 py-2 border rounded-lg"
+                autoComplete="off"
               />
             </div>
           )}

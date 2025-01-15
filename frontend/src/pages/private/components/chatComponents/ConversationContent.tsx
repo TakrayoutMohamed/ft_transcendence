@@ -61,6 +61,8 @@ const ConversationContent = () => {
       fetchingData: fetchingMessagesData,
     });
   const chatContext = useContext(ChatDataContext);
+  if (!chatContext)
+    throw new Error("it should be wraped inside a chatContext");
   const { chatSocket } = chatContext;
   listenForChatSocket(chatSocket);
   let previousMsgOwner = " ";

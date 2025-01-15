@@ -15,13 +15,7 @@ export const drawGame = (ctx: CanvasRenderingContext2D, gameState: any) => {
   drawRoundedRect(ctx, CANVAS_WIDTH - 10, gameState.rightPaddleY, 10, 100, 5, paddleGradient);
   
 
-  ctx.beginPath();
-  ctx.arc(gameState.ballX + 5, gameState.ballY + 5, 10, 0, Math.PI * 2);
-  ctx.fillStyle = '#ffffff';
-  ctx.shadowColor = '#ffffff';
-  ctx.shadowBlur = 15;
-  ctx.fill();
-
+  
   ctx.strokeStyle = 'rgba(27, 8, 73, 0.71)';
   ctx.shadowColor = 'rgba(121, 0, 0, 0.25)';
   ctx.shadowBlur = 10;
@@ -32,6 +26,12 @@ export const drawGame = (ctx: CanvasRenderingContext2D, gameState: any) => {
   ctx.lineTo(CANVAS_WIDTH / 2, CANVAS_HEIGHT - margin);
   ctx.stroke();  
   
+  ctx.beginPath();
+  ctx.arc(gameState.ballX + 5, gameState.ballY + 5, 10, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffffff';
+  ctx.shadowColor = '#ffffff';
+  ctx.shadowBlur = 15;
+  ctx.fill();
 };
 
 const drawRoundedRect = (

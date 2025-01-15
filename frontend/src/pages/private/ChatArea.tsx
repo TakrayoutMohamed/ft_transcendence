@@ -27,14 +27,14 @@ const MessageSchema = z.object({
 type MessageSchemaType = z.infer<typeof MessageSchema>;
 
 const FormComponent = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-  } = useForm<MessageSchemaType>({ resolver: zodResolver(MessageSchema) });
+  const { register, handleSubmit, reset } = useForm<MessageSchemaType>({
+    resolver: zodResolver(MessageSchema),
+  });
   const messages = useSelector((state: RootState) => state.messages.value);
   const friends = useSelector((state: RootState) => state.friends.value);
   const chatContext = useContext(ChatDataContext);
+  if (!chatContext)
+    throw new Error("this component need to be wrapped by chat context");
   const { userData, chatSocket } = chatContext;
   const onSubmit: SubmitHandler<MessageSchemaType> = async (
     data: MessageSchemaType
@@ -47,8 +47,13 @@ const FormComponent = () => {
         };
         if (chatSocket?.readyState === w3cwebsocket.OPEN) {
           chatSocket?.send(JSON.stringify(dataToSend));
-          if (friends.find((friend : FriendsDataType)=> (friend.username === dataToSend.receiver)))
-          {
+          if (
+            friends.find(
+              (friend: FriendsDataType) =>
+                friend.username === dataToSend.receiver
+            ) &&
+            !userData?.is_blocked
+          ) {
             setMessagesData([
               ...messages,
               {
@@ -61,8 +66,7 @@ const FormComponent = () => {
           }
         }
       }
-    } catch (err) {
-    }
+    } catch (err) {}
   };
 
   return (
@@ -92,6 +96,8 @@ const ChatArea = () => {
   const setProfileVisible =
     useOutletContext<React.Dispatch<React.SetStateAction<boolean>>>();
   const chatContext = useContext(ChatDataContext);
+  if (!chatContext)
+    throw new Error("this component need to be wrapped by chat context");
   const navigate = useNavigate();
   useEffect(() => {
     if (chatContext.userData?.username !== userName && userName !== undefined) {
@@ -99,7 +105,7 @@ const ChatArea = () => {
         .post("search_username", { username: userName })
         .then((res) => {
           if (res.data?.error === "User matching query does not exist.")
-            navigate("/noPageWithThisRout", {replace: true});
+            navigate("/noPageWithThisRout", { replace: true });
           chatContext.setUserData(res.data);
         })
         .catch((err) => {
@@ -111,11 +117,11 @@ const ChatArea = () => {
       if (user?.username !== userName) setUser(chatContext.userData);
     }
   }, [userName, chatContext?.userData]);
-  useEffect(()=> {
+  useEffect(() => {
     return () => {
       setMessagesData([]);
     };
-  }, [userName])
+  }, [userName]);
   return (
     <>
       <div className={`${chat}`}>
