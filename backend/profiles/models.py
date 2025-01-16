@@ -7,6 +7,13 @@ def validate_image(image):
     if not image.name.endswith(('.png', '.jpg')):
         raise ValidationError("Only .png, .jpg, or .jpeg files are allowed.")
 
+import inspect
+def print_stack():
+    stack = inspect.stack()
+    print("Complete call stack:")
+    for frame in stack:
+        print(f"Function: {frame.function}, File: {frame.filename}, Line: {frame.lineno}")
+
 class User(AbstractBaseUser):
     first_name = models.CharField(max_length=25,blank=True)
     last_name = models.CharField(max_length=25,blank=True)
@@ -41,6 +48,14 @@ class User(AbstractBaseUser):
 
     class Meta:
         db_table = "User"
+
+    def save(self, *args, **kwargs):
+        print(f"User.save() is called !! {self.username} -- {self.wins}")
+        # print_stack()
+        # Perform additional custom behavior here if needed
+        
+        # Call the original save method
+        super().save(*args, **kwargs)
 
     def token(self):
         refresh = RefreshToken.for_user(self)
