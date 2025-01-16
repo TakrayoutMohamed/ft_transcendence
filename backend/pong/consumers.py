@@ -24,7 +24,6 @@ DELTA_TIME = 0.016
 class PongConsumer(AsyncWebsocketConsumer):
     game_states = {}
 
-    # key { paddpos, ball posl,}
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.canvas_width = 1200
@@ -112,7 +111,6 @@ class PongConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_game(self):
         try:
-            # Get game using the game_id stored during connection
             return Game.objects.get(id=self.game.id)
         except Game.DoesNotExist:
             print(f"Game with ID {self.game.id} not found")
@@ -154,6 +152,15 @@ class PongConsumer(AsyncWebsocketConsumer):
             last_game="win",
             medal=medal
         )
+        # user = User.objects.get(username=player_username)
+        # print("-----------------")
+        # print(user);
+        # print(f"old: {user.wins}")
+        # print(f"update val: {wins}")
+        # user.wins = wins;
+        # user.save()
+        # print(f"now: {user.wins}")
+        # print("-----------------")
 
     @database_sync_to_async
     def update_users_rank(self):
@@ -219,21 +226,18 @@ class PongConsumer(AsyncWebsocketConsumer):
         next_y = game_states['ball']['y'] + game_states['ball']['speedY'] * self.ball_speed * DELTA_TIME
         next_x = game_states['ball']['x'] + game_states['ball']['speedX'] * self.ball_speed * DELTA_TIME
 
-        # Ball collision with top and bottom
-        if next_y <= 0:  # Top collision
-            # print("Top collision detected")
-            game_states['ball']['y'] = abs(next_y)  # Bounce back from top
-            game_states['ball']['speedY'] = abs(game_states['ball']['speedY'])  # Ensure downward movement
-        elif next_y >= self.canvas_height - BALL_SIZE:  # Bottom collision
+        if next_y <= 0:
+            game_states['ball']['y'] = abs(next_y)
+            game_states['ball']['speedY'] = abs(game_states['ball']['speedY']) 
+        elif next_y >= self.canvas_height - BALL_SIZE:
             # print("Bottom collision detected")
             excess = next_y - (self.canvas_height - BALL_SIZE)
-            game_states['ball']['y'] = (self.canvas_height - BALL_SIZE) - excess  # Bounce back from bottom
-            game_states['ball']['speedY'] = -abs(game_states['ball']['speedY'])  # Ensure upward movement
+            game_states['ball']['y'] = (self.canvas_height - BALL_SIZE) - excess
+            game_states['ball']['speedY'] = -abs(game_states['ball']['speedY'])
         else:
-            game_states['ball']['y'] = next_y  # No collision, normal movement
+            game_states['ball']['y'] = next_y
 
-        game_states['ball']['x'] = next_x  # Update x position
-        # Ball collision with paddles
+        game_states['ball']['x'] = next_x
         
         if (game_states['ball']['x'] <= PADDLE_WIDTH and 
             game_states['ball']['y'] + BALL_SIZE >= game_states['player1']['paddle_player1'] and 
@@ -245,19 +249,16 @@ class PongConsumer(AsyncWebsocketConsumer):
             # print("colide with left paddle")
             game_states['ball']['x'] = PADDLE_WIDTH + 1
             game_states['ball']['speedX'] = -game_states['ball']['speedX']
-            # 
-            # Calculate new direction (not speed) based on where ball hits paddle
+
             paddle_center = game_states['player1']['paddle_player1'] + PADDLE_HEIGHT / 2
             hit_position = game_states['ball']['y'] - paddle_center
 
-            # If hit very close to center, randomly choose up or down direction
-            if abs(hit_position) < (PADDLE_HEIGHT * 0.1):  # 10% of paddle height as center zone
+            if abs(hit_position) < (PADDLE_HEIGHT * 0.1):
                 import random
-                hit_position = random.choice([-1, 1]) * PADDLE_HEIGHT * 0.25  # Force a non-zero angle
+                hit_position = random.choice([-1, 1]) * PADDLE_HEIGHT * 0.25 
 
-            # Calculate new Y direction
-            direction_multiplier = hit_position / (PADDLE_HEIGHT / 2)  # -1 to 1
-            game_states['ball']['speedY'] = abs(game_states['ball']['speedX']) * direction_multiplier  # Use X speed
+            direction_multiplier = hit_position / (PADDLE_HEIGHT / 2) 
+            game_states['ball']['speedY'] = abs(game_states['ball']['speedX']) * direction_multiplier  
 
         if (game_states['ball']['x'] >= self.canvas_width - PADDLE_WIDTH - BALL_SIZE and 
             game_states['ball']['y'] + BALL_SIZE >= game_states['player2']['paddle_player2'] and 
@@ -273,14 +274,12 @@ class PongConsumer(AsyncWebsocketConsumer):
             paddle_center = game_states['player2']['paddle_player2'] + PADDLE_HEIGHT / 2
             hit_position = game_states['ball']['y'] - paddle_center
 
-        # If hit very close to center, randomly choose up or down direction
-            if abs(hit_position) < (PADDLE_HEIGHT * 0.1):  # 10% of paddle height as center zone
+            if abs(hit_position) < (PADDLE_HEIGHT * 0.1):
                 import random
-                hit_position = random.choice([-1, 1]) * PADDLE_HEIGHT * 0.25  # Force a non-zero angle
+                hit_position = random.choice([-1, 1]) * PADDLE_HEIGHT * 0.25 
 
-            # Calculate new Y direction
-            direction_multiplier = hit_position / (PADDLE_HEIGHT / 2)  # -1 to 1
-            game_states['ball']['speedY'] = abs(game_states['ball']['speedX']) * direction_multiplier  # Use X speed
+            direction_multiplier = hit_position / (PADDLE_HEIGHT / 2)
+            game_states['ball']['speedY'] = abs(game_states['ball']['speedX']) * direction_multiplier  
 
         # print("-------------------------------|>", self.ball_speed)
         if (game_states['ball']['x'] <= 0):
@@ -398,6 +397,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event['message']))
 
     async def disconnect(self, close_code):
+        # print("====================================")
+        # print(f"print wTFFFFF: {(await User.objects.aget(username="hello")).wins}")
+        # print(f"HNAAAAAA {self.scope['user'].username} === {self.scope['user'].wins}")
+        await sync_to_async(self.scope['user'].refresh_from_db)()
         try:
             game_state = PongConsumer.game_states[self.room_group_name]
             game = await self.get_available_game()
@@ -427,7 +430,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                     medal = "selverMedalLevel3Icon"
                 elif level > 30:
                     medal = "goldenMedalIcon"
-
+                print(f"waaa zbi: {wins}")
                 await self.add_level(player2_username, level, score, wins, medal)
                 await self.update_users_rank()
                 await self.add_losses(player1_username, losses)
@@ -453,7 +456,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                     medal = "selverMedalLevel3Icon"
                 elif level > 30:
                     medal = "goldenMedalIcon"
-
+                print(f"waaa zbi: {wins}")
                 await self.add_level(player1_username, level, score, wins, medal)
                 await self.update_users_rank()
                 await self.add_losses(player2_username, losses)
@@ -487,6 +490,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                     }
                 }
             )
+            print("====================================")
         except Exception as e:
             print(f"Error in disconnect: {str(e)}")
             
@@ -597,6 +601,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             print(f"Fatal error in ball update task: {str(e)}")
 
     async def receive(self, text_data):
+        await sync_to_async(self.scope['user'].refresh_from_db)()
         try:
             data = json.loads(text_data)
 
