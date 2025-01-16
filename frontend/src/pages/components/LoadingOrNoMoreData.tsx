@@ -16,7 +16,7 @@ const LoadingOrNoMoreData = ({isLoading, hasMore}: LoadingOrNoMoreDataProps) => 
             </div>
           )}
           {!hasMore && (
-            <div className="no-more-data"> no more data...</div>
+            <div className="no-more-data"></div>
           )}
     </div>
   )

@@ -5,11 +5,14 @@ import {
   setFriendsData,
   setNotificationsData,
 } from "./setAuthenticationData";
-import { axiosPrivate } from "@/src/services/api/axios";
+import axios, { axiosPrivate } from "@/src/services/api/axios";
 import { UserDataType } from "@/src/customDataTypes/UserDataType";
 import { AllUsersDataType } from "@/src/states/authentication/allUsersSlice";
 import { FriendRequestsType } from "@/src/customDataTypes/FriendRequestsType";
 import { NotificationsDataType } from "@/src/customDataTypes/NotificationsDataType";
+import { w3cwebsocket } from "websocket";
+import { closeSocket } from "./closeSocket";
+import refreshToken from "@/src/services/hooks/refreshToken";
 
 export const sendFriendRequest = (username: string) => {
   axiosPrivate
@@ -183,4 +186,16 @@ export const unblockUser = (username: string) => {
     .catch((err) => {
       if (err.name === "CanceledError") return;
     });
+};
+
+export const isValidAccessToken = (clientSocket?: w3cwebsocket | null) => {
+  axios.post("Verify_token", {token: store.getState().accessToken.value})
+  .then()
+  .catch(async () => {
+    if (clientSocket?.readyState === w3cwebsocket.OPEN) closeSocket(clientSocket);
+    const refresh = refreshToken();
+    let tmpAccessTokenFrom = await refresh();
+    if (!tmpAccessTokenFrom) return false;
+  })
+  return true;
 };
