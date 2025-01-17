@@ -464,10 +464,10 @@ class GameConsumer(AsyncWebsocketConsumer):
             info2  = await self.get_level(player1_username)
             level = info['level'] + 1
             score = info['score'] + 100
-            wins = info['wins'] + 1
+            wins = info['league_wins'] + 1
             medal = "selverMedalLevel1Icon"
 
-            losses = info2['losses'] + 1
+            losses = info2['league_losses'] + 1
 
             if level > 10 and level <= 20:
                 medal = "selverMedalLevel2Icon"
