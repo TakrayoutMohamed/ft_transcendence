@@ -2,8 +2,6 @@ import { profileIcon } from "@/media-exporting";
 import { chatUsersChatCard } from "../../styles";
 import { Link } from "react-router-dom";
 import { ConversationListDataType } from "./ConversationsList";
-import { RootState } from "@/src/states/store";
-import { useSelector } from "react-redux";
 import { useRef } from "react";
 import { useInfiniteScroll } from "@/src/services/hooks/useInfiniteScroll";
 import { setConversationsData } from "@/src/pages/modules/setAuthenticationData";
@@ -22,10 +20,7 @@ const fetchingConversationsListData = (
   return axiosPrivate.get(url, { params: requestParams });
 };
 
-const UsersChatCard = () => {
-  const conversations = useSelector(
-    (state: RootState) => state.conversations.value
-  );
+const UsersChatCard = ({conversations} : {conversations:ConversationListDataType[]}) => {
   const refConversationList = useRef<HTMLDivElement>(null);
   const conversationListStartRef = useRef<HTMLDivElement>(null);
   const { isLoading, hasMore, handleScroll } =

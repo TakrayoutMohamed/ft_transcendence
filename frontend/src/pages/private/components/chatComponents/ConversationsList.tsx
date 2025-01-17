@@ -26,11 +26,10 @@ function searchFilter(
     : (event.target.style.color = "white");
   filteredSearchData.length > 0 && setConversationsList(filteredSearchData);
 }
-let conversationsListData: ConversationListDataType[] = [];
 
 const ConversationsList = () => {
   const conversations = useSelector((state: RootState) => state.conversations.value)
-  const [, setConversationsList] = useState<
+  const [conversationsList, setConversationsList] = useState<
     ConversationListDataType[]
   >(conversations);
   useEffect(() => {
@@ -49,7 +48,7 @@ const ConversationsList = () => {
             className="form-controlss"
             placeholder="Search......."
             onChange={(event) =>
-              searchFilter(event, conversationsListData, setConversationsList)
+              searchFilter(event, conversations, setConversationsList)
             }
             aria-describedby="basic-addon1"
           />
@@ -57,7 +56,7 @@ const ConversationsList = () => {
         <div className="message">Message</div>
         <TabListHeaders />
         <div className="tab-content mt-3" id="tab-content">
-            <UsersChatCard/>
+            <UsersChatCard conversations={conversationsList}/>
             <FriendsChatCard />
         </div>
       </div>
