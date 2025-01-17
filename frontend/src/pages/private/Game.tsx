@@ -6,8 +6,25 @@ import GameModeInGame from "@/src/pages/private/components/gameComponents/GameMo
 import PongPlayerInGame from "./components/gameComponents/PongPlayerInGame";
 import { game } from "./styles";
 import SearchFriendsInGame from "./components/gameComponents/SearchFriendsInGame";
+import { axiosPrivate } from "@/src/services/api/axios";
+import { setUserData } from "../modules/setAuthenticationData";
+import { useEffect } from "react";
+
+const getUsersInfo = async () => {
+  await axiosPrivate
+    .get("user_info")
+    .then((res) => {
+      setUserData(res.data);
+    })
+    .catch((err) => {
+      if (err.name === "CanceledError") return;
+    });
+};
 
 const Game = () => {
+  useEffect(() => {
+    getUsersInfo();
+  }, []);
   return (
     <>
       <div className={game}>
