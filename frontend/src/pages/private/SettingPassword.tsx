@@ -13,6 +13,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { axiosPrivate } from "@/src/services/api/axios";
+import { toast } from "react-toastify";
+import { AxiosError } from "axios";
 
 const updatePasswordSchema = z
   .object({
@@ -63,8 +65,21 @@ const SettingPassword = () => {
   ) => {
     try {
       await axiosPrivate.post("pass", data);
+      toast.success("password Updated successfully", {
+        autoClose: 1000,
+        toastId: data.old_password + " success " + data.password,
+        containerId:"validation"
+      });
       reset({ old_password: "", password: "", password1: "" });
     } catch (err) {
+      if (err instanceof AxiosError)
+      {
+        toast.error(`${err.response?.data.error}`, {
+          autoClose: 2000,
+          toastId: data.old_password + " err " + data.password,
+          containerId:"validation"
+        });
+      }
     }
   };
   return (

@@ -15,19 +15,17 @@ const updateUserSchema = z.object({
   first_name: z
     .string()
     .max(50, { message: "max length of first name is 50 chars" })
-    // .min(3, { message: "min length of first name is 3 chars" })
     .optional(),
   last_name: z
     .string()
     .max(50, { message: "max length of last name is 50 chars" })
-    // .min(3, { message: "min length of last name is 3 chars" })
     .optional(),
   avatar: z
     .any()
     .optional()
     .refine(
       (file) => {
-        return !file || !file[0] || file[0]?.size <= 2000000;
+        return !file || !file[0] || file[0]?.size <= (2 * 1024 * 1024);
       },
       { message: `Max image size is 2MB.` }
     )
@@ -93,7 +91,7 @@ const SettingProfile = () => {
       toast.success("profile data Updated successfully", {
         autoClose: 1000,
         toastId: userData?.username! + userData?.created_at,
-        containerId:"validation"
+        containerId: "validation",
       });
     } catch (err) {
       toast.error("Error in update profile data", {
@@ -177,7 +175,7 @@ const SettingProfile = () => {
               type="file"
               id="formInputImage"
               accept=".svg,.png,.jpg,.jpeg,.gif"
-              {...register("avatar", { onChange: checkIsImageValid })}
+              {...register("avatar", { onChange: checkIsImageValid})}
             />
             <img alt="user image" className="d-none" id="selectedImage" />
             <span className="error-message">

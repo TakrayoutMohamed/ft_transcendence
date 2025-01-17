@@ -13,9 +13,6 @@ export function checkIsImageValid() {
       let newImage = new Image();
       newImage.src = URL.createObjectURL(file[0]);
       newImage.onload = function () {
-        let size = file[0].size / 2000000; //converting from bytes to MB
-        if (size > 2 || file[0].size <= 0)
-          errorsSpan.innerText = "image has more than 2MB";
         if (errorsSpan.innerText !== "") {
           formInputImage.value = "";
           previewImage.src = "";
@@ -31,9 +28,22 @@ export function checkIsImageValid() {
           previewImage.src = newImage.src;
         }
       };
+      newImage.onerror = function () {
+        formInputImage.value = "";
+        resetPreview(previewImage, errorsSpan, "The selected file is not a valid image.");
+      };
     } else {
       !previewImage.classList.contains("d-none") &&
         previewImage.classList.add("d-none");
     }
   } catch (err) {}
+}
+
+
+function resetPreview(previewImage: HTMLImageElement, errorsSpan: HTMLSpanElement, errorMessage: string) {
+  previewImage.src = "";
+  if (!previewImage.classList.contains("d-none")) previewImage.classList.add("d-none");
+
+  errorsSpan.innerText = errorMessage;
+  if (errorsSpan.classList.contains("d-none")) errorsSpan.classList.remove("d-none");
 }

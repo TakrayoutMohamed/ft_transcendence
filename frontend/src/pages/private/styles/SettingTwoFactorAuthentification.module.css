@@ -12,6 +12,8 @@
     height: fit-content;
     border-radius: 12px;
     margin-bottom: auto;
+    padding-inline: 1em;
+    padding-block: 0.3em;
     border: 0px;
   }
 

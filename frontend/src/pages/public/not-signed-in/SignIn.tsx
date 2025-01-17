@@ -91,7 +91,7 @@ const SignIn = () => {
         } else if (error.response?.status === 401) {
           setErrorMsg("Unauthorized");
         } else {
-          setErrorMsg("Login Failed: " + err.response?.data);
+          setErrorMsg("Login Failed: " + err.response?.data.error);
         }
       } else {
         setErrorMsg(errorMsg);
