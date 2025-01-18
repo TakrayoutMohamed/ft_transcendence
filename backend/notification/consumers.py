@@ -118,5 +118,5 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'sender': sender,
             'type': 'invite_tournemet',
-            'message': f'{sender['username']} sent your localtournement request'
+            'message': f'{sender['username']} sent your Local tournement request'
         }))

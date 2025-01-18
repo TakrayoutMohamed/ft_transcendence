@@ -158,10 +158,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(
-        minutes=int(os.environ.get('ACCESS_TOKEN_LIFETIME', 20))  
+        minutes=180  
     ),
     'REFRESH_TOKEN_LIFETIME': timedelta(
-        days=int(os.environ.get('REFRESH_TOKEN_LIFETIME', 7))
+        days=7
     ),
     "AUTH_HEADER_TYPES": ("Bearer",),
     'SIGNING_KEY': os.environ.get('SECRET_KEY'),
