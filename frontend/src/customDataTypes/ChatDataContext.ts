@@ -6,6 +6,7 @@ type ChatDataContextType = {
     userData: UserDataType | undefined;
     setUserData: React.Dispatch<React.SetStateAction<UserDataType | undefined>>;
     chatSocket: w3cwebsocket | null;
+    setChatSocket: React.Dispatch<React.SetStateAction<w3cwebsocket | null>>;
   };
   
   export const ChatDataContext: React.Context<ChatDataContextType | undefined> =

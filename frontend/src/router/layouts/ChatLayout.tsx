@@ -1,20 +1,18 @@
 import { Outlet } from "react-router-dom";
 import { chatLayout } from "../styles";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import ConversationsList from "@/src/pages/private/components/chatComponents/ConversationsList";
 import "@router/styles/chatGlobalOverridingStyles.css";
 import Profile from "./components/chat/Profile";
-import { w3cwebsocket } from "websocket";
 import { ChatDataContext } from "@/src/customDataTypes/ChatDataContext";
-import { openSocket } from "@/src/pages/modules/openSocket";
 import { RootState } from "@/src/states/store";
-import { closeSocket } from "@/src/pages/modules/closeSocket";
 import { UserDataType } from "@/src/customDataTypes/UserDataType";
 import { useSelector } from "react-redux";
-import { isValidAccessToken } from "@/src/pages/modules/fetchingData";
+import { useHandleSockets } from "@/src/services/hooks/useHandleSockets";
+import { closeSocket } from "@/src/pages/modules/closeSocket";
+import { w3cwebsocket } from "websocket";
 
-let chatSocket_: w3cwebsocket | null = null;
-
+let chatSocketHelper: w3cwebsocket | null = null;
 const ChatLayout = () => {
   const [isProfileVisible, setProfileVisible] = useState<boolean>(false);
   const [userData, setUserData] = useState<UserDataType | undefined>(undefined);
@@ -22,32 +20,17 @@ const ChatLayout = () => {
     (state: RootState) => state.accessToken.value
   );
 
-  useEffect(() => {
-    if (!chatSocket_ || chatSocket_.readyState !== w3cwebsocket.OPEN) {
-      if (isValidAccessToken(chatSocket_))
-      {
-        chatSocket_ = openSocket("chat", accessToken);
-        if (chatSocket_) {
-          chatSocket_.onclose = () => {
-            if (chatSocket_) {
-              if (chatSocket_.readyState === w3cwebsocket.CLOSED || chatSocket_.readyState === w3cwebsocket.CLOSING)
-                chatSocket_ = null;
-            }
-          };
-        }
-      }
-    }
+  const { client: chatSocket, setClient: setChatSocket } = useHandleSockets({urlOfSocket:"chat", accessToken: accessToken})
+  chatSocketHelper = chatSocket;
+  useLayoutEffect(() => {
     return () => {
-      if (chatSocket_?.readyState === w3cwebsocket.OPEN)
-      {
-        closeSocket(chatSocket_)
-      }
-    };
-  }, [accessToken]);
-
+      closeSocket(chatSocketHelper);
+      chatSocketHelper = null;
+    }
+  },[])
   return (
     <ChatDataContext.Provider
-      value={{ userData, setUserData, chatSocket: chatSocket_ }}
+      value={{ userData, setUserData, chatSocket, setChatSocket}}
     >
       <div className={`${chatLayout}`}>
         <main className="bg-infos" id="main">

@@ -9,7 +9,8 @@ export type SocketJsonValueType =
   | SocketJsonValueType[]
   | any;
 
-export const watchSocket = (client: w3cwebsocket) => {
+export const watchSocket = (client: w3cwebsocket | null) => {
+  if (!client) return;
   client.onmessage = (dataEvent: IMessageEvent): SocketJsonValueType => {
     let json_data: SocketJsonValueType = null;
     json_data = JSON.parse(dataEvent.data as string);

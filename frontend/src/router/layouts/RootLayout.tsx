@@ -5,10 +5,23 @@ import { rootLayout } from "../styles";
 import {useHandleSockets} from "@/src/services/hooks/useHandleSockets";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/states/store";
+import { watchSocket } from "@/src/pages/modules/watchSocket";
+import { useLayoutEffect } from "react";
+import { closeSocket } from "@/src/pages/modules/closeSocket";
+import { w3cwebsocket } from "websocket";
 
+let notificationSocketHelper: w3cwebsocket | null = null;
 const RootLayout = () => {
   const accessToken = useSelector((state: RootState) => state.accessToken.value)
-  useHandleSockets({urlOfSocket : "notification", accessToken: accessToken});
+  const {client : notificationSocket} = useHandleSockets({urlOfSocket : "notification", accessToken: accessToken, watchSocket: watchSocket});
+  notificationSocketHelper = notificationSocket;
+
+  useLayoutEffect(() => {
+    return () => {
+      closeSocket(notificationSocketHelper);
+      notificationSocketHelper = null;
+    }
+  },[])
   return (
     <>
       <div className={rootLayout}>
