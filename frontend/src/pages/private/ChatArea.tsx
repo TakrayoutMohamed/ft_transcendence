@@ -11,7 +11,7 @@ import { useContext, useEffect, useState } from "react";
 import { ChatDataContext } from "@/src/customDataTypes/ChatDataContext";
 import { w3cwebsocket } from "websocket";
 import { RootState, store } from "@/src/states/store";
-import { setMessagesData } from "../modules/setAuthenticationData";
+import { setConversationsData, setMessagesData } from "../modules/setAuthenticationData";
 import { useSelector } from "react-redux";
 import { axiosPrivate } from "@/src/services/api/axios";
 import { UserDataType } from "@/src/customDataTypes/UserDataType";
@@ -54,6 +54,12 @@ const FormComponent = () => {
             ) &&
             !userData?.is_blocked
           ) {
+            if (userData && !store.getState().conversations.value.find((convers) => convers.username === userData.username)){
+              setConversationsData([
+                ...store.getState().conversations.value,
+                userData,
+              ]);
+            }
             setMessagesData([
               ...messages,
               {

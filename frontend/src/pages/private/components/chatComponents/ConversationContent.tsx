@@ -15,15 +15,18 @@ import { setMessagesData } from "@/src/pages/modules/setAuthenticationData";
 import { axiosPrivate } from "@/src/services/api/axios";
 import LoadingOrNoMoreData from "@/src/pages/components/LoadingOrNoMoreData";
 
-const listenForChatSocket = (chatSocket: w3cwebsocket | null) => {
+const listenForChatSocket = (chatSocket: w3cwebsocket | null, username?: string) => {
   if (chatSocket && chatSocket.readyState === w3cwebsocket.OPEN) {
     chatSocket.onmessage = (dataEvent: IMessageEvent) => {
       let json_data: SocketJsonValueType = null;
       json_data = JSON.parse(dataEvent.data as string);
-      if (json_data?.type !== "error")
-        store.dispatch(
-          setMessages([...store.getState().messages.value, json_data.message])
-        );
+    if (json_data?.type !== "error")
+    {
+      if (username && username !== json_data.message.sender.username) return ;
+      store.dispatch(
+        setMessages([...store.getState().messages.value, json_data.message])
+      );
+    }
       else toast.warn(json_data.message, { containerId: "validation" });
     };
   }
@@ -64,7 +67,7 @@ const ConversationContent = () => {
   if (!chatContext)
     throw new Error("it should be wraped inside a chatContext");
   const { chatSocket } = chatContext;
-  listenForChatSocket(chatSocket);
+  listenForChatSocket(chatSocket, userName);
   let previousMsgOwner = " ";
   return (
     <>
