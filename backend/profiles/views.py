@@ -695,6 +695,8 @@ class AcceptInvite(APIView):
             player1 = User.objects.get(username=matchs.player1_username)
             if user == player1:
                 return Response({'cannot play with your self'},status=400)
+            if player1.on_game:
+                raise TokenError({'player is bussy'})
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 f"notification_{player1.id}",
@@ -720,7 +722,6 @@ class WaurnTurnement(APIView):
             user_data = UserSerializer(user).data
             channel_layer = get_channel_layer()
             for friend in user.friends.all():
-                print(friend)
                 async_to_sync(channel_layer.group_send)(
                     f"notification_{friend.id}",
                     {

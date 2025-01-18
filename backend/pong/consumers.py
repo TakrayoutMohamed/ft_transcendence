@@ -43,7 +43,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'speedX': 0.0,
                 'speedY': 0.0,
             },      
-            'winner': 0,              
+            'winerr': 0,              
             'player2': {
                 'username': None,
                 'dir': 0,    
@@ -152,15 +152,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             last_game="win",
             medal=medal
         )
-        # user = User.objects.get(username=player_username)
-        # print("-----------------")
-        # print(user);
-        # print(f"old: {user.wins}")
-        # print(f"update val: {wins}")
-        # user.wins = wins;
-        # user.save()
-        # print(f"now: {user.wins}")
-        # print("-----------------")
 
     @database_sync_to_async
     def update_users_rank(self):
@@ -184,7 +175,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         Game.objects.filter(room=self.room_group_name).update(
             game_state=PongConsumer.game_states[self.room_group_name]
         )
-    #====================================
     @database_sync_to_async
     def get_player1(self, game):
         return game.player1
@@ -230,7 +220,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             game_states['ball']['y'] = abs(next_y)
             game_states['ball']['speedY'] = abs(game_states['ball']['speedY']) 
         elif next_y >= self.canvas_height - BALL_SIZE:
-            # print("Bottom collision detected")
             excess = next_y - (self.canvas_height - BALL_SIZE)
             game_states['ball']['y'] = (self.canvas_height - BALL_SIZE) - excess
             game_states['ball']['speedY'] = -abs(game_states['ball']['speedY'])
@@ -245,8 +234,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
             if(self.ball_speed < 800):
                 self.ball_speed = self.ball_speed + 40
-                    # print("ball_speeeeeeeeed :", self.ball_speed)
-            # print("colide with left paddle")
             game_states['ball']['x'] = PADDLE_WIDTH + 1
             game_states['ball']['speedX'] = -game_states['ball']['speedX']
 
@@ -266,9 +253,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
             if(self.ball_speed < 800):
                 self.ball_speed = self.ball_speed + 40
-                    # print("ball_speeeeeeeeed :", self.ball_speed)
-            # print("colide with right paddle")
-            # print(game_states['ball']['x'], game_states['ball']['y'])
             game_states['ball']['x'] = self.canvas_width - PADDLE_WIDTH - BALL_SIZE - 1
             game_states['ball']['speedX'] = -game_states['ball']['speedX']
             paddle_center = game_states['player2']['paddle_player2'] + PADDLE_HEIGHT / 2
@@ -281,11 +265,10 @@ class PongConsumer(AsyncWebsocketConsumer):
             direction_multiplier = hit_position / (PADDLE_HEIGHT / 2)
             game_states['ball']['speedY'] = abs(game_states['ball']['speedX']) * direction_multiplier  
 
-        # print("-------------------------------|>", self.ball_speed)
         if (game_states['ball']['x'] <= 0):
             game_states['score_player2'] += 1
             if(game_states['score_player2'] == 7):
-                game_states['winner'] = 2
+                game_states['winerr'] = 2
 
             game_states['ball']['x'] = self.canvas_width / 2
             game_states['ball']['y'] = self.canvas_height / 2
@@ -297,8 +280,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         elif game_states['ball']['x'] >= self.canvas_width:
             game_states['score_player1'] += 1
             if(game_states['score_player1'] == 7):
-                game_states['winner'] = 1
-                # print("-----------------}>", )
+                game_states['winerr'] = 1
             game_states['ball']['x'] = self.canvas_width / 2
             game_states['ball']['y'] = self.canvas_height / 2
             game_states['ball']['speedX'] = 0.0
@@ -323,28 +305,19 @@ class PongConsumer(AsyncWebsocketConsumer):
                 self.channel_name
             )
 
-            # existing_game = await self.get_available_game()
-            # print("game_:==================", existing_game.room)
-            # if existing_game is None:
             if self.room_group_name not in PongConsumer.game_states:
                 print("player 1 jaaaaa w jab++++++")
                 print("player jaaaaa", self.user)
                 self.game = await self.create_game(self.room_group_name)
                 if self.game.winner != 'Unknown':
                     self.game = await self.create_game(self.room_group_name)
-
-                # print("room: ", existing_game.room)
-            
-            # elif await self.check_player1(existing_game) == False:
             else:
                 existing_game = await self.get_available_game()
                 if await self.check_player1(existing_game) == False:                    
                     self.game = await self.add_player2(existing_game)
                 self.game = existing_game
-                # Get usernames in an async-safe way
                 players = await self.get_player_usernames(self.game)
-                # print("/////////////////////////////")
-                if PongConsumer.game_states[self.room_group_name]['winner']:
+                if PongConsumer.game_states[self.room_group_name]['winerr']:
                     self.flag = 1
 
                 self.ball_update_task = asyncio.create_task(self.update_ball_position_interval())
@@ -397,9 +370,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(event['message']))
 
     async def disconnect(self, close_code):
-        # print("====================================")
-        # print(f"print wTFFFFF: {(await User.objects.aget(username="hello")).wins}")
-        # print(f"HNAAAAAA {self.scope['user'].username} === {self.scope['user'].wins}")
         await sync_to_async(self.scope['user'].refresh_from_db)()
         try:
             game_state = PongConsumer.game_states[self.room_group_name]
@@ -407,11 +377,10 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.change_state(self.scope['user'],False)
 
             winner = None
-            # Save the updated state
-            if self.player_number == 1 and game_state['winner'] == 0:
+            if self.player_number == 1 and game_state['winerr'] == 0:
                 loser = self.get_player1(game)
                 winner = self.get_player2(game)
-                game_state['winner'] = 2
+                game_state['winerr'] = 2
                 self.game = await self.get_available_game()
                 player1_username, player2_username = await self.get_usernames()
                 await self.update_game_winner(player2_username, player1_username)
@@ -434,10 +403,10 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.add_level(player2_username, level, score, wins, medal)
                 await self.update_users_rank()
                 await self.add_losses(player1_username, losses)
-            elif self.player_number == 2 and game_state['winner'] == 0:
+            elif self.player_number == 2 and game_state['winerr'] == 0:
                 loser = self.get_player2(game)
                 winner = self.get_player1(game)
-                game_state['winner'] = 1
+                game_state['winerr'] = 1
                 self.game = await self.get_available_game()
                 player1_username, player2_username = await self.get_usernames()
                 await self.update_game_winner(player1_username, player2_username)
@@ -456,18 +425,16 @@ class PongConsumer(AsyncWebsocketConsumer):
                     medal = "selverMedalLevel3Icon"
                 elif level > 30:
                     medal = "goldenMedalIcon"
-                print(f"waaa zbi: {wins}")
                 await self.add_level(player1_username, level, score, wins, medal)
                 await self.update_users_rank()
                 await self.add_losses(player2_username, losses)
                 
-            if game_state['winner'] and winner:
+            if game_state['winerr'] and winner:
                 await sync_to_async(Game.objects.filter(room=self.room_name).update)(
                     game_state=game_state, winner=winner, loser=loser
                 )
             print(f"WebSocket disconnected with code: {close_code}")
 
-            # Cancel the ball update task if it exists
             if self.ball_update_task and not self.ball_update_task.done():
                 self.ball_update_task.cancel()
                 try:
@@ -486,7 +453,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                     'type': 'game_message',
                     'message': {
                         'type': "end_game",
-                        'winner': game_state['winner'],
+                        'winner': game_state['winerr'],
                     }
                 }
             )
@@ -529,8 +496,8 @@ class PongConsumer(AsyncWebsocketConsumer):
                             }
                         }
                     )
-                    if(game_states['winner']):
-                        if game_states['winner'] == 1 and self.flag == 0:
+                    if(game_states['winerr']):
+                        if game_states['winerr'] == 1 and self.flag == 0:
                             self.game = await self.get_available_game()
                             player1_username, player2_username = await self.get_usernames()
                             await self.update_game_winner(player1_username, player2_username)
@@ -553,7 +520,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                             await self.add_level(player1_username, level, score, wins, medal)
                             await self.update_users_rank()
                             await self.add_losses(player2_username, losses)
-                        elif game_states['winner'] == 2 and self.flag == 0:
+                        elif game_states['winerr'] == 2 and self.flag == 0:
                             self.game = await self.get_available_game()
                             player1_username, player2_username = await self.get_usernames()
                             await self.update_game_winner(player2_username, player1_username)
@@ -582,7 +549,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                                 'type': 'game_message',
                                 'message': {
                                     'type': "end_game",
-                                    'winner': game_states['winner'],
+                                    'winner': game_states['winerr'],
                                 }
                             }
                         )

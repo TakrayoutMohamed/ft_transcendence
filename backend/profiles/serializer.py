@@ -187,6 +187,7 @@ class ByUserSerializer(serializers.ModelSerializer):
                   'is2fa',
                   'is_online',
                   'rank',
+                  'on_game',
                   'is_online',
                   'is_blocked',
                   ]

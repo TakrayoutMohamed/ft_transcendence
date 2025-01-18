@@ -35,11 +35,12 @@ const NotificationsComponent = ({
     accept = () => {
       toast.dismiss(toastName);
       if (gameId)
+      {
         axiosPrivate
-          .put("accept_invite", { game_id: gameId })
-          .then()
-          .catch((err) => {if (err.name === "CanceledError") return;});
-      navigating(`/pong`, { state: { gameId: gameId } });
+        .put("accept_invite", { game_id: gameId })
+        .then(()=> {navigating(`/pong`, { state: { gameId: gameId } });})
+        .catch((err) => {if (err.name === "CanceledError") return;});
+      }
     };
   }
   if (!reject) {

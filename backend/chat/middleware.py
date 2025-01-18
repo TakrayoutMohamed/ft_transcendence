@@ -26,6 +26,7 @@ class TokenAuthMiddleware:
         except:
             await send({
                 "type": "websocket.close",
+                "code":4001
             })
             return None
         return await self.app(scope, receive, send)
