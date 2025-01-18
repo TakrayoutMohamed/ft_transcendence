@@ -3,6 +3,7 @@ import { useGameLoop } from './components/pingPong/useGameLoop';
 import { drawGame } from './components/pingPong/gameRenderer';
 import { updateGameState } from './components/pingPong/gameLogic';
 import { GameState, INITIAL_GAME_STATE, CANVAS_WIDTH, CANVAS_HEIGHT } from './components/pingPong/gameTypes';
+import { isValidAccessToken } from "@/src/pages/modules/fetchingData";
 
 import { w3cwebsocket } from "websocket";
 import { useSelector } from "react-redux";
@@ -26,23 +27,33 @@ export const PingPongLayout: React.FC = () => {
   const isPaused = useRef<boolean>(true);
 
   useEffect(() => {
-    if (!AccessToken) return; // Don't initialize if no AccessToken
+    if (!AccessToken) return;
 
     if (connected == false)
       {
-        wsRef.current = new w3cwebsocket(
-          `${process.env.VITE_BACKEND_API_SOCKETS}/ws/pong/${gameId}?token=${AccessToken}`
-        );
+          if (isValidAccessToken(wsRef.current)) {
+            if (wsRef.current && 
+                (wsRef.current.readyState === WebSocket.CONNECTING || 
+                 wsRef.current.readyState === WebSocket.OPEN)) {
+              return;
+            }
+            if (wsRef.current) {
+              wsRef.current.close();
+              wsRef.current = null;
+            }
+            wsRef.current = new w3cwebsocket(
+              `${process.env.VITE_BACKEND_API_SOCKETS}/ws/pong/${gameId}?token=${AccessToken}`
+            );
+          }
 
-        // WebSocket event handlers
+      if(wsRef.current) {
         wsRef.current.onopen = () => {
-          setConnected(true);
-        };
-
+      setConnected(true);
+    };
         wsRef.current.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data.toString());
-              switch(data.type) {
+            switch(data.type) {
                 case 'game_ready':
                   isPaused.current = false;
                   break;
@@ -62,24 +73,25 @@ export const PingPongLayout: React.FC = () => {
                       username1: data.name1,
                       username2: data.name2
                     }));
-                      break;
-                  case 'end_game':
+                    break;
+                    case 'end_game':
                       setEndGame(true);
                       winner.current = data.winner;
                       break;
-
-                  default:
-              }
-
+                      
+                      default:
+                      }
+                      
           } catch (error) {
               console.error("Error parsing message:", error);
-          }
-      };
-
-        wsRef.current.onclose = () => {
+            }
+          };
+          
+          wsRef.current.onclose = () => {
           setConnected(false)
         };
       }
+    }
         let keys = {
           'up': false,
           'down': false
@@ -135,7 +147,7 @@ export const PingPongLayout: React.FC = () => {
               }
               clearInterval(intervalRef.current);
           };
-    }, []);
+    }, [AccessToken]);
 
   useEffect(() => {
     if (!gameId)
