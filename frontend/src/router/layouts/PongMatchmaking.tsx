@@ -57,7 +57,6 @@ const PongMatch: React.FC = () => {
           default:
         }
       } catch (error) {
-        console.error("Error parsing message:", error);
       }
     };
 

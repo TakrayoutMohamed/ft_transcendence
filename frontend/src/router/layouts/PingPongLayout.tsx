@@ -83,7 +83,6 @@ export const PingPongLayout: React.FC = () => {
                       }
                       
           } catch (error) {
-              console.error("Error parsing message:", error);
             }
           };
           

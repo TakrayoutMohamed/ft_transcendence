@@ -65,7 +65,6 @@ const Match: React.FC = () => {
                   break;
               }
             } catch (error) {
-              console.error("Error parsing message:", error);
             }
           };
 

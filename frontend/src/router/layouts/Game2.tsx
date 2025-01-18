@@ -59,7 +59,6 @@ const Game: React.FC<GameProps> = ({gameId}) => {
           }
           
       } catch (error) {
-          console.error("Error parsing message:", error);
       }
     };
 
