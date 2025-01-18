@@ -222,6 +222,8 @@ class Signin2fa(APIView):
                 totp = pyotp.TOTP(user.pyotp_secret)
                 if totp.verify(request.data['otp']):
                     token = user.token()
+                    user.is_online = True
+                    user.save()
                     response = Response({
                         'access': str(token.access_token)
                     },status=status.HTTP_200_OK)
