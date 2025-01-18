@@ -26,8 +26,8 @@ const signInSchema = z.object({
     .max(50, { message: "max email length is 50 chars" })
     .email({ message: "Enter valid email" }),
   password: z
-    .string({ message: "password is required" })  
-    .min(3, { message: "password must be more than 3 chars" })
+    .string({ message: "password is required" })
+    .min(8, { message: "password must be more than 8 chars" })
     .max(30, { message: "password must be less than 30 chars" }),
 });
 

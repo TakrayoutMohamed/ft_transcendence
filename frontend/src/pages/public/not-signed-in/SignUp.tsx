@@ -23,19 +23,19 @@ const signUpSchema = z.object({
     .email({ message: "Enter valid email" }),
   username: z
     .string({ message: "username is required" })
-    .min(3, { message: "username length must be more than 3 chars" })
-    .max(50, { message: "username length is less than 50 chars" }),
+    .min(4, { message: "username length must be more than 4 chars" })
+    .max(20, { message: "username length is less than 20 chars" }),
   first_name: z
     .string({ message: "first name is required" })
-    .min(3, { message: "first name length must be more than 3 chars" })
-    .max(50, { message: "first name length is less than 50 chars" }),
+    .min(4, { message: "first name length must be more than 4 chars" })
+    .max(25, { message: "first name length is less than 25 chars" }),
   last_name: z
     .string({ message: "last name is required" })
-    .min(3, { message: "last name length must be more than 3 chars" })
-    .max(50, { message: "last name length is less than 50 chars" }),
+    .min(4, { message: "last name length must be more than 4 chars" })
+    .max(25, { message: "last name length is less than 25 chars" }),
   password: z
     .string({ message: "password is required" })
-    .min(3, { message: "password must be more than 3 chars" })
+    .min(8, { message: "password must be more than 8 chars" })
     .max(30, { message: "password must be less than 30 chars" }),
 });
 
