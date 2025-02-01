@@ -9,6 +9,7 @@
 }
 
 .settingLayout div[class*="input-field"] {
+   visibility: hidden;
    display: flex;
    flex: row nowrap;
    align-items: center;
