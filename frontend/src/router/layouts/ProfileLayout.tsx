@@ -63,8 +63,8 @@ const ProfileLayout = () => {
             <Stats
               title={"TOURNAMENT STATS"}
               data={{
-                win: data.wins ? data.wins : 0,
-                lose: data.losses ? data.losses : 0,
+                win: 0,
+                lose: 0,
               }}
             />
           </div>
