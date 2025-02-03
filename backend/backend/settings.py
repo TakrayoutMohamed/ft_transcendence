@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY','foo')
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
 
-DEBUG = True
+DEBUG = False
 
 # Application definition
 INSTALLED_APPS = [
