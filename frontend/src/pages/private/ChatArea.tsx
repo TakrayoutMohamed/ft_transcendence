@@ -79,7 +79,7 @@ const FormComponent = () => {
   return (
     <>
       <form className="sendMessageField" onSubmit={handleSubmit(onSubmit)}>
-        <span className="">
+        <span className="invisible">
           <SlEmotsmile size={30} />
         </span>
         <input
