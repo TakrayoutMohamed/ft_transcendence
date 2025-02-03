@@ -535,8 +535,8 @@ class SearchUserByusername(APIView):
     def post(self, request):
         try:
             username = request.data['username']
-            if username == request.user.username:
-                return Response('you can not search for your self',status=400)
+            # if username == request.user.username:
+            #     return Response('you can not search for your self',status=400)
             user = User.objects.get(username=username)
             user_data = self.serializer_class(user , context={'request': request})
             response = Response(user_data.data,status=200)
@@ -586,8 +586,8 @@ class UserRecentGames(APIView):
         try:
             try:
                 username = request.GET['username']
-                if username == request.user.username:
-                    return Response('you can not search for your self',status=400)
+                # if username == request.user.username:
+                #     return Response('you can not search for your self',status=400)
                 user = User.objects.get(username=username)
             except:
                 user = request.user
