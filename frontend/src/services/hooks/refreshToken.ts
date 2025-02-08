@@ -11,11 +11,13 @@ const refreshToken = () => {
     try {
       const response = await axios.post(refreshUrl);
       accessToken = response.data.access_token;
+      await axios.post("Verify_token",{token: accessToken});
       setAuthenticatedData(accessToken);
       return accessToken;
     } catch (err) {
       accessToken = undefined;
       setUnAuthenticatedData();
+    } finally {
       return accessToken;
     }
   };
