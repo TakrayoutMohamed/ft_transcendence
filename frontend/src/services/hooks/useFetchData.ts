@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { CanceledError } from "../api/axios";
-import { AxiosResponse } from "axios";
+import { AxiosError, AxiosResponse } from "axios";
 import { scrollDirectionTypes } from "./useInfiniteScroll";
 
 interface useFetchDataProps<T> {
@@ -70,6 +70,8 @@ export const useFetchData = <T>({
       } catch (err) {
         setIsLoading(false);
         if (err instanceof CanceledError) return;
+        if (err instanceof AxiosError && (err as AxiosError).response?.data === "no chat room found")
+          setHasMore(false);
       }
     },
     [page, isLoading, hasMore, username]
