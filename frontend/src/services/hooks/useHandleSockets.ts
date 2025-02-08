@@ -4,6 +4,7 @@ import { openSocket } from "@/src/pages/modules/openSocket";
 import { useSelector } from "react-redux";
 import { RootState } from "@/src/states/store";
 import { isValidAccessToken } from "@/src/pages/modules/fetchingData";
+import { closeSocket } from "@/src/pages/modules/closeSocket";
 
 interface useHandleSocketsProps {
   urlOfSocket: string;
@@ -19,6 +20,8 @@ const useHandleSockets = ({
   const isAuthenticated = useSelector((state: RootState) => state.authenticator.value)
   const [client, setClient] = useState<w3cwebsocket | null>(null);
   const handleSockets = async () => {
+    if (client && client.readyState === w3cwebsocket.OPEN)
+      closeSocket(client);
     if (!client || (client.readyState !== w3cwebsocket.OPEN && client.readyState !== w3cwebsocket.CONNECTING))
     {
       if (isValidAccessToken(client))
